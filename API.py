@@ -6,8 +6,7 @@ import requests
 auth_token = os.getenv("AUTH_TOKEN")
 website_id = os.getenv("CRISP_WEBSITE_ID")
 
-print("hello")
-print("z")
+
 app = Flask(__name__)
 
 def chatbot_response(question):
