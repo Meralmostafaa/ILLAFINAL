@@ -17,7 +17,6 @@ client = Groq(
     api_key=os.environ.get("GroqGROQ_API_KEY "),
 )
 
-# Initialize NLTK objects
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
 
@@ -29,24 +28,17 @@ chunked_documents = []
 
 def clean_text(text):
 
-    # Remove HTML tags 
     text = re.sub(r'<.*?>', '', text)
     
-    # Convert to lowercase
     text = text.lower()
 
-    # Remove numbers and punctuation
-    text = re.sub(r'\d+', '', text)
     text = text.translate(str.maketrans('', '', string.punctuation))
 
-    # Remove extra whitespaces
     text = re.sub(r'\s+', ' ', text).strip()
 
-    # Tokenize, remove stopwords, and apply lemmatization
     words = text.split()
     words = [lemmatizer.lemmatize(word) for word in words if word not in stop_words]
 
-    # Join words back into a single string
     cleaned_text = ' '.join(words)
     
     return cleaned_text
