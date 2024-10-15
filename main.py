@@ -11,7 +11,7 @@ def query_documents(question, n_results=4):
    
     query_embedding = get_embedding(question)
    
-    # Query the index with the generated embedding
+    
     results = index.query(
         namespace="namespace1",
         vector=query_embedding,
@@ -19,9 +19,8 @@ def query_documents(question, n_results=4):
         include_metadata=True  
     )
 
-    # Extract the relevant chunks
     relevant_chunks = [
-        {"id": match['id'], "text": match['metadata']['text']}  # Extract text from metadata
+        {"id": match['id'], "text": match['metadata']['text']}  
         for match in results['matches']
     ]
 
@@ -30,13 +29,9 @@ def query_documents(question, n_results=4):
 
 
 def generate_response(question, relevant_chunks):
-    #if not relevant_chunks:
-        #return "I have no knowledge about this context."
     
-    # Concatenate the text content of the relevant chunks
     context = "\n\n".join([chunk["text"] for chunk in relevant_chunks])
     
-    # Refined prompt to guide the model's response
     prompt = (
        f"Given the following context, provide a detailed answer to the question asked. "
         f"Only use the information provided in the context. Do not include any additional information or make assumptions.\n\n"
@@ -57,9 +52,7 @@ def generate_response(question, relevant_chunks):
     )
 
     answer = response.choices[0].message.content.strip()
-
-
-# Ensure the answer is based on the context
+    
     context_keywords = set(context.lower().split())
     answer_keywords = set(answer.lower().split())
     
