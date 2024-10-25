@@ -8,6 +8,7 @@ from pinecone.grpc import PineconeGRPC as Pinecone
 from pinecone import ServerlessSpec
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+import time
 
 
 load_dotenv()
@@ -41,7 +42,6 @@ def clean_text(text):
    
     text = re.sub(r'<.*?>', '', text)
     text = text.lower()
-    text = re.sub(r'\d+', '', text)
     text = text.translate(str.maketrans('', '', string.punctuation))
     text = re.sub(r'\s+', ' ', text).strip()
     words = text.split()
@@ -69,18 +69,24 @@ def split_text(text, chunk_size=1000, chunk_overlap=20):
         start = end - chunk_overlap
     return chunks
 
+
 def add_embeddings_to_pinecone(document_text):
 
-    chunks = split_text(document_text)
     
-    for i, chunk in enumerate(chunks):
+    chunks = split_text(document_text)
 
+    doc_id = f"doc_{int(time.time())}"
+
+    for i, chunk in enumerate(chunks):
         cleaned_chunk = clean_text(chunk)
         embedding = get_embedding(cleaned_chunk)
-    
+
+       
+        chunk_id = f"{doc_id}_chunk_{i+1}"
+
         index.upsert(
             vectors=[{
-                "id": f"doc_chunk_{i+1}",  
+                "id": chunk_id, 
                 "values": embedding,
                 "metadata": {"text": cleaned_chunk}
             }],
