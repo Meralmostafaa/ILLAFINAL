@@ -11,13 +11,6 @@ from nltk.stem import WordNetLemmatizer
 import time
 
 
-load_dotenv()
-
-client = Groq(
-    api_key=os.environ.get("GroqGROQ_API_KEY"),
-)
-
-
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
 
